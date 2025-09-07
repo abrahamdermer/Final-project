@@ -34,3 +34,5 @@ class Manager:
 m = Manager()
 m.create_md()
 m.send()
+
+m.create_md()
