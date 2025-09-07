@@ -26,13 +26,14 @@ class Manager:
 
     def send(self):
         for v in self.files_pals_md.values():
-            print(v)
+            # print(v)
             self.kafka.send(self.topic_name,v)
 
 
 
 m = Manager()
 m.create_md()
-m.send()
+# m.send()
 
-m.create_md()
+
+
