@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Callable, Any
 
-MessageHandler = Callable[[str, Any], None]
+MessageHandler = Callable[[str, Any , dict], None]
 
 
 
