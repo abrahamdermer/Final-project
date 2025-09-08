@@ -6,9 +6,10 @@ class MongoRepository(IRepository):
     """Concrete repository for MongoDB collections."""
 
 
-    def __init__(self, collection_name:str = "", conn: MongoConnect|None = None):
+    def __init__(self, collection_name:str = "test", conn: MongoConnect|None = None):
         self._conn = conn or MongoConnect()
         self.db = self._conn.connect()
+        self.fs = None
         name = collection_name
         self.collection = self.db[name]
 
@@ -16,7 +17,29 @@ class MongoRepository(IRepository):
         try:
             return self.collection.insert_one(data).inserted_id
         except Exception as exc:
-            raise f"Mongo insert failed: {exc}"
+            print( f"Mongo insert failed: {exc}")
+        
+    def insert_gridfs(self, data: dict[str, Any]) -> Any:
+        if self.fs is None:
+            self.fs = self._conn.connect_gridfs()
+        try:
+            return self.fs.put( data['file'],filename=data['name'], metadata=data['metadata'])
+            # return self.fs.upload_from_stream(data['name'], data['file'])
+        except Exception as exc:
+            print(f"Mongo insert failed: {exc}")
+
+
+    def get_all(self):
+        for grid_out in self.fs.find():
+            print(f"File Name: {grid_out.filename}")
+            print(f"File ID: {grid_out._id}")
+            print(f"Content Type: {grid_out.content_type}")
+            print(f"Length: {grid_out.length} bytes")
+        
+
+
+
+
 
     # def find(self, query: dict[str, Any]) -> list[Any]:
     #     try:

@@ -26,9 +26,11 @@ class KafkaConsumerRepo(IConsumer):
     #     self._consumer.subscribe(topics)
 
 
-    def listen(self, on_message: MessageHandler) -> None:
+    def listen(self,n, on_message: MessageHandler) -> None:
+        print('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
         try:
             for msg in self._consumer:
+                print('vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv')
                 value = _decode(msg.value)
                 on_message(msg.topic, value)
         except enumerate as exc:

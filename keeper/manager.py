@@ -1,36 +1,71 @@
 from tools.kafkaDAL.kafka_consumer import KafkaConsumerRepo
 from tools.dbsDAL.es_repository import ESRepository
-es = None
+from tools.dbsDAL.mongo_repository import MongoRepository
+from tools.create_u_id import UniqID
+import threading
+import time
 
+
+es = None
+mongodb:MongoRepository|None = None
 
 def messageHandler(topic:str,message:dict):
     print(f"topic: {topic}, masseg: {message}")
-    path = message.pop('path')
-    u_id = '' #  = Create_id.get_uniq_id(message['?'])
+    path:str = message.pop('path')
+    u_id = UniqID.get_id(message['atime'],message['size'])
     message['u_id'] = u_id
     es.insert(message)
-    file = '' # getfile(path)
-    # mdb.send(file,u_id)
+    aaa = {}
+    with open(path, 'rb') as f:
+        aaa['file'] = f
+        aaa['name'] = path.split('\\')[-1]
+        aaa['metadata'] = {'u_id':u_id}
+        print(aaa)
+        mongodb.insert_gridfs(aaa)
 
+# return self.fs.upload_from_stream(data['name'], data['file'], metadata=data['metadata'])
+# with open('your_file.txt', 'rb') as f:
+#         file_id = fs.upload_from_stream('your_file.txt', f)
+#         # You can also add metadata:
+#         # file_id = fs.upload_from_stream('your_file.txt', f, metadata={'author': 'John Doe'})    
 
 
 class Manager:
 
     def __init__(self):
         self.kafka = KafkaConsumerRepo('to_saving')
-        global es
+        global es , mongodb
         es = ESRepository()
+        mongodb = MongoRepository()
 
-    def start_lisane(self):
-        self.kafka.listen(messageHandler)
+    def start_lisane(self,messageHandler):
+        # self.kafka.listen(messageHandler)
+        t = threading.Thread(target=self.kafka.listen,args=(1,messageHandler),daemon=True)
+        t.start()
+        
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("stop thred")
 
+    # def run(self):
+    #     t = threading.Thread(target=self.start_lisane,args=(messageHandler),daemon=True)
+    #     t.start()
+    #     try:
+    #         while True:
+    #             time.sleep(1)
+    #     except KeyboardInterrupt:
+    #         print("stop thred")
     
 
 
 
 
     
+if __name__ == "__main__":
+    m = Manager()
 
-m = Manager()
+    m.start_lisane(messageHandler)
 
-m.start_lisane()
+    # mongodb.get_all()
