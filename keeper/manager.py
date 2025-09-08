@@ -15,13 +15,13 @@ def messageHandler(topic:str,message:dict):
     u_id = UniqID.get_id(message['atime'],message['size'])
     message['u_id'] = u_id
     es.insert(message)
-    aaa = {}
+    data = {}
     with open(path, 'rb') as f:
-        aaa['file'] = f
-        aaa['name'] = path.split('\\')[-1]
-        aaa['metadata'] = {'u_id':u_id}
-        print(aaa)
-        mongodb.insert_gridfs(aaa)
+        data['file'] = f
+        data['name'] = path.split('\\')[-1]
+        data['metadata'] = {'u_id':u_id}
+        print(data)
+        mongodb.insert_gridfs(data)
 
 # return self.fs.upload_from_stream(data['name'], data['file'], metadata=data['metadata'])
 # with open('your_file.txt', 'rb') as f:
@@ -42,7 +42,7 @@ class Manager:
         # self.kafka.listen(messageHandler)
         t = threading.Thread(target=self.kafka.listen,args=(1,messageHandler),daemon=True)
         t.start()
-        
+
         try:
             while True:
                 time.sleep(1)
