@@ -8,8 +8,8 @@ class ESRepository(IRepository):
         self._conn = conn or ESConnect()
         self.client = self._conn.connect()
         self.index = index_name 
-        if not self.client.indices.exists(index="my-data-stream",):
-            self.es.indices.create(index=self.index,)
+        if not self.client.indices.exists(index=self.index,):
+            self.client.indices.create(index=self.index)
 
 
 
