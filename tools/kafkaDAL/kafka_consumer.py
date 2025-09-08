@@ -3,6 +3,7 @@ from typing import  Any
 from kafka.errors import KafkaError as KafkaLibError
 from .i_consumer import IConsumer, MessageHandler
 from .kafka_connect import KafkaConnect
+from tools import Logger
 
 
 def _decode(raw:Any) -> Any:
@@ -17,6 +18,7 @@ class KafkaConsumerRepo(IConsumer):
     """High-level consumer wrapper using kafka.KafkaConsumer."""
 
     def __init__(self,topics: str|list[str], conn:KafkaConnect|None = None) -> None:
+        self.logger = Logger.get_logger()
         self._conn = conn or KafkaConnect()
         self._consumer = self._conn.get_consumer(topics)
 
@@ -29,10 +31,11 @@ class KafkaConsumerRepo(IConsumer):
     def listen(self,n, on_message: MessageHandler) -> None:
         try:
             for msg in self._consumer:
+                self.logger.info(f"from topic {msg.topic} received message")
                 value = _decode(msg.value)
                 on_message(msg.topic, value)
         except enumerate as exc:
-            raise (f"Consumer listen failed: {exc}")
+            self.logger.error(f"Consumer listen failed: {exc}")
         finally:
             self.close()
 

@@ -1,6 +1,7 @@
 from pymongo import MongoClient
 import gridfs
 from .i_connect import IConnect
+from tools import Logger
 
 class MongoConnect(IConnect):
     """MongoDB connection manager (singleton per instance)."""
@@ -10,15 +11,17 @@ class MongoConnect(IConnect):
         self._client = None
         self.db = None
         self.fs = None
+        self.logger = Logger.get_logger()
 
     def connect(self):
         try:
             if self._client is None:
                 self._client = MongoClient(self.uri)
-            self.db = self._client[self.db_name]
+                self.logger.info(f"connected to mongoDB")
+                self.db = self._client[self.db_name]
             return self.db
         except Exception as exc:
-            print( f"MongoDB connection failed: {exc}")
+            self.logger.error( f"MongoDB connection failed: {exc}")
         
     def connect_gridfs(self):
         try:
@@ -28,7 +31,7 @@ class MongoConnect(IConnect):
                 self.fs = gridfs.GridFS(self.db)
             return self.fs
         except :
-            print("MongoDB connection failed")
+            self.logger.error("MongoDB connection failed")
         
     def close(self) -> None:
         if self._client is not None:

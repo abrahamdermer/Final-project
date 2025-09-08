@@ -1,7 +1,4 @@
-from tools.kafkaDAL.kafka_consumer import KafkaConsumerRepo
-from tools.dbsDAL.es_repository import ESRepository
-from tools.dbsDAL.mongo_repository import MongoRepository
-from tools.create_u_id import UniqID
+from tools import KafkaConsumerRepo ,ESRepository ,MongoRepository ,UniqID , Logger
 import threading
 import time
 
@@ -22,6 +19,7 @@ def messageHandler(topic:str,message:dict):
         data['metadata'] = {'u_id':u_id}
         print(data)
         mongodb.insert_gridfs(data)
+    
 
 # return self.fs.upload_from_stream(data['name'], data['file'], metadata=data['metadata'])
 # with open('your_file.txt', 'rb') as f:
