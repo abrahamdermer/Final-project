@@ -18,6 +18,7 @@ def messageHandler(topic:str,message:dict):
     # print(file)
 
     text = transc.file_to_text(file,u_id)
+    print(text)
     # es.update(text,u_id)
     
 

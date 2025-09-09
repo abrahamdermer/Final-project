@@ -38,13 +38,9 @@ class MongoRepository(IRepository):
         if self.fs is None:
             self.fs = self._conn.connect_gridfs(self.name)
         try:
-            file_content = None
-            # grid_out_cursor  =  self.fs.find({"metadata": query})
-            grid_out_cursor  =  self.fs.find(query)
-            print(f"{grid_out_cursor}\nasasasasaasasasasasasasasasasa")
+            file_content = b''
+            grid_out_cursor  =  self.fs.find({"metadata": query})
             for grid_out_file in grid_out_cursor:
-                print(grid_out_file)
-                # Now you can call read() on the individual GridOut object
                 file_content += grid_out_file.read()
                 
             return file_content

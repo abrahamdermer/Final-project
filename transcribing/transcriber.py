@@ -14,9 +14,9 @@ class Transcriber:
 
     
     def file_to_text(self,file,id):
-        print(file)
-        # audio = self.r.record(file)
-        # with open(f"{id}.wav", "wb") as f:
-        #     f.write(audio.get_wav_data())
-        text = ''
+        with open('downloaded_audio.wav', 'wb') as f:
+            f.write(file)
+        with sr.AudioFile("downloaded_audio.wav") as source:
+            audio = self.r.record(source)
+        text = self.r.recognize_google(audio)
         return text
