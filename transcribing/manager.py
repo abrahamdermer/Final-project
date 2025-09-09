@@ -19,6 +19,7 @@ def messageHandler(topic:str,message:dict):
 
     text = transc.file_to_text(file,u_id)
     print(text)
+
     # es.update(text,u_id)
     
 
@@ -28,6 +29,7 @@ class Manager:
         self.kafka = KafkaConsumerRepo('to_transcribing')
         global es , mongodb,transc
         transc = Transcriber()
+
         es = ESRepository()
         mongodb = MongoRepository()
 

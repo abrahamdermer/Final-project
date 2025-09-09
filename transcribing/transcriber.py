@@ -11,7 +11,6 @@ class Transcriber:
 
     def __init__(self):
         self.r = sr.Recognizer()
-
     
     def file_to_text(self,file,id):
         with open('downloaded_audio.wav', 'wb') as f:

@@ -20,12 +20,14 @@ class MongoConnect(IConnect):
                 # self.logger.info(f"connected to mongoDB")
                 self.db = self._client[self.db_name]
             return self.db
+        
         except Exception as exc:
             # self.logger.error( f"MongoDB connection failed: {exc}")
             raise
 
 
     def connect_gridfs(self,col_name):
+
         try:
             if self.db is None:
                 self.connect()

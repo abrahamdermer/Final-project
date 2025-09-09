@@ -11,8 +11,13 @@ class MongoRepository(IRepository):
         self._conn = conn or MongoConnect()
         self.db = self._conn.connect()
         self.fs = None
+<<<<<<< HEAD
         self.name = collection_name
         self.collection = self.db[self.name]
+=======
+        name = collection_name
+        self.collection = self.db[name]
+>>>>>>> 065245ac38bfc7285b9b96aca80ce76307769473
         # self.logger =Logger.get_logger()
 
     def insert(self, data: dict[str, Any]) -> Any:
@@ -33,6 +38,7 @@ class MongoRepository(IRepository):
         except Exception as exc:
             # self.logger.error(f"Mongo insert failed: {exc}")
             raise
+<<<<<<< HEAD
 
     def find_gridfs(self, query: dict[str, Any]) -> list[Any]:
         if self.fs is None:
@@ -51,6 +57,8 @@ class MongoRepository(IRepository):
 
 
 
+=======
+>>>>>>> 065245ac38bfc7285b9b96aca80ce76307769473
 
     def get_all(self):
         for grid_out in self.fs.find():
@@ -70,6 +78,14 @@ class MongoRepository(IRepository):
     #     except Exception as exc:
     #         raise (f"Mongo find failed: {exc}")
 
+<<<<<<< HEAD
+=======
+    def find_gridfs(self, query: dict[str, Any]) -> list[Any]:
+        try:
+            return self.collection.find(query)
+        except Exception as exc:
+            raise (f"Mongo find failed: {exc}")
+>>>>>>> 065245ac38bfc7285b9b96aca80ce76307769473
 
     # def update(self, query: dict[str, Any], new_values: dict[str, Any]) -> Any:
     #     try:
