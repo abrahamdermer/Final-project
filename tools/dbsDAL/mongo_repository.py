@@ -1,7 +1,7 @@
 from typing import Any
 from .i_repository import IRepository
 from .mongo_connect import MongoConnect
-from tools import Logger
+# from tools import Logger
 
 class MongoRepository(IRepository):
     """Concrete repository for MongoDB collections."""
@@ -13,13 +13,14 @@ class MongoRepository(IRepository):
         self.fs = None
         name = collection_name
         self.collection = self.db[name]
-        self.logger =Logger.get_logger()
+        # self.logger =Logger.get_logger()
 
     def insert(self, data: dict[str, Any]) -> Any:
         try:
             return self.collection.insert_one(data).inserted_id
         except Exception as exc:
-            self.logger.error( f"Mongo insert failed: {exc}")
+            raise 
+            # self.logger.error( f"Mongo insert failed: {exc}")
         
     def insert_gridfs(self, data: dict[str, Any]) -> Any:
         if self.fs is None:
@@ -28,8 +29,8 @@ class MongoRepository(IRepository):
             return self.fs.put( data['file'],filename=data['name'], metadata=data['metadata'])
             # return self.fs.upload_from_stream(data['name'], data['file'])
         except Exception as exc:
-            self.logger.error(f"Mongo insert failed: {exc}")
-
+            # self.logger.error(f"Mongo insert failed: {exc}")
+            raise
 
     def get_all(self):
         for grid_out in self.fs.find():
@@ -48,6 +49,12 @@ class MongoRepository(IRepository):
     #         return self.collection.find(query)
     #     except Exception as exc:
     #         raise (f"Mongo find failed: {exc}")
+
+    def find_gridfs(self, query: dict[str, Any]) -> list[Any]:
+        try:
+            return self.collection.find(query)
+        except Exception as exc:
+            raise (f"Mongo find failed: {exc}")
 
     # def update(self, query: dict[str, Any], new_values: dict[str, Any]) -> Any:
     #     try:

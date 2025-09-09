@@ -1,6 +1,6 @@
 from kafka import KafkaProducer, KafkaConsumer
 from .i_connect import IConnect
-from tools import Logger
+# from tools import Logger
 
 class KafkaConnect(IConnect):
     """
@@ -11,7 +11,7 @@ class KafkaConnect(IConnect):
     def __init__(self, bootstrap_servers:str = "localhost:9092",group_id = 'mygroup') -> None:
         self.bootstrap_servers = bootstrap_servers
         self.group_id = group_id
-        self.logger = Logger.get_logger()
+        # self.logger = Logger.get_logger()
        
 
     def get_producer(self) -> KafkaProducer:
@@ -19,7 +19,7 @@ class KafkaConnect(IConnect):
             bootstrap_servers=self.bootstrap_servers,
             client_id= "kafka-dal-client"
         )
-        self.logger.info('kafka producer Created')
+        # self.logger.info('kafka producer Created')
         return producer
 
     def get_consumer(self,topics:list[str]|str) -> KafkaConsumer:
@@ -32,7 +32,7 @@ class KafkaConnect(IConnect):
             auto_offset_reset="latest"
         )
         consumer.subscribe(topics)
-        self.logger.info(f"kafka consumer to topic {topics} Created")
+        # self.logger.info(f"kafka consumer to topic {topics} Created")
         return consumer
 
     def close(self) -> None:

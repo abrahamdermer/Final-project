@@ -1,10 +1,11 @@
-from tools import KafkaConsumerRepo ,ESRepository ,MongoRepository ,UniqID , Logger
+from tools import KafkaConsumerRepo ,ESRepository ,MongoRepository ,UniqID ,KafkaProducerRepo
 import threading
 import time
 
-
+producer:KafkaProducerRepo|None = None
 es = None
 mongodb:MongoRepository|None = None
+
 
 def messageHandler(topic:str,message:dict):
     print(f"topic: {topic}, masseg: {message}")
@@ -19,6 +20,8 @@ def messageHandler(topic:str,message:dict):
         data['metadata'] = {'u_id':u_id}
         print(data)
         mongodb.insert_gridfs(data)
+    producer.send("to_transcribing",{'u_id':u_id})
+    
     
 
 # return self.fs.upload_from_stream(data['name'], data['file'], metadata=data['metadata'])
@@ -32,7 +35,8 @@ class Manager:
 
     def __init__(self):
         self.kafka = KafkaConsumerRepo('to_saving')
-        global es , mongodb
+        global es , mongodb,producer
+        producer = KafkaProducerRepo()
         es = ESRepository()
         mongodb = MongoRepository()
 
