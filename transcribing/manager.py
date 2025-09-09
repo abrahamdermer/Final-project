@@ -13,14 +13,10 @@ def messageHandler(topic:str,message:dict):
     u_id = message["u_id"]
     query = {'u_id':u_id}
     file = mongodb.find_gridfs(query)
-    # with open(f"{u_id}.wav",'w') as f:
-    #     f.write('aaa')
-    # print(file)
-
     text = transc.file_to_text(file,u_id)
     print(text)
-
-    # es.update(text,u_id)
+    query = {"match":{'u_id':u_id}}
+    print(es.update(query,{'text':text}))
     
 
 class Manager:
@@ -29,7 +25,6 @@ class Manager:
         self.kafka = KafkaConsumerRepo('to_transcribing')
         global es , mongodb,transc
         transc = Transcriber()
-
         es = ESRepository()
         mongodb = MongoRepository()
 
