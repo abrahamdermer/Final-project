@@ -5,7 +5,7 @@ from .i_connect import IConnect
 
 class MongoConnect(IConnect):
     """MongoDB connection manager (singleton per instance)."""
-    def __init__(self, uri:str = "mongodb://localhost:27017", db_name:str = "data"):
+    def __init__(self, uri:str = "mongodb://localhost:27000", db_name:str = "data"):
         self.uri = uri
         self.db_name = db_name
         self._client = None
@@ -25,12 +25,12 @@ class MongoConnect(IConnect):
             raise
 
 
-    def connect_gridfs(self):
+    def connect_gridfs(self,col_name):
         try:
             if self.db is None:
                 self.connect()
             if self.fs is None:
-                self.fs = gridfs.GridFS(self.db)
+                self.fs = gridfs.GridFS(self.db , collection=col_name)
             return self.fs
         except :
             # self.logger.error("MongoDB connection failed")

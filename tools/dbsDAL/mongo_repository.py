@@ -11,8 +11,8 @@ class MongoRepository(IRepository):
         self._conn = conn or MongoConnect()
         self.db = self._conn.connect()
         self.fs = None
-        name = collection_name
-        self.collection = self.db[name]
+        self.name = collection_name
+        self.collection = self.db[self.name]
         # self.logger =Logger.get_logger()
 
     def insert(self, data: dict[str, Any]) -> Any:
@@ -24,13 +24,37 @@ class MongoRepository(IRepository):
         
     def insert_gridfs(self, data: dict[str, Any]) -> Any:
         if self.fs is None:
-            self.fs = self._conn.connect_gridfs()
+            self.fs = self._conn.connect_gridfs(self.name)
         try:
-            return self.fs.put( data['file'],filename=data['name'], metadata=data['metadata'])
+            res = self.fs.put(data['file'],filename=data['name'], metadata=data['metadata'])
+            print(res)
+            return res
             # return self.fs.upload_from_stream(data['name'], data['file'])
         except Exception as exc:
             # self.logger.error(f"Mongo insert failed: {exc}")
             raise
+
+    def find_gridfs(self, query: dict[str, Any]) -> list[Any]:
+        if self.fs is None:
+            self.fs = self._conn.connect_gridfs(self.name)
+        try:
+            file_content = None
+            # grid_out_cursor  =  self.fs.find({"metadata": query})
+            grid_out_cursor  =  self.fs.find(query)
+            print(f"{grid_out_cursor}\nasasasasaasasasasasasasasasasa")
+            for grid_out_file in grid_out_cursor:
+                print(grid_out_file)
+                # Now you can call read() on the individual GridOut object
+                file_content += grid_out_file.read()
+                
+            return file_content
+
+        except Exception as exc:
+            print (f"Mongo find failed: {exc}")
+
+
+
+
 
     def get_all(self):
         for grid_out in self.fs.find():
@@ -50,11 +74,6 @@ class MongoRepository(IRepository):
     #     except Exception as exc:
     #         raise (f"Mongo find failed: {exc}")
 
-    def find_gridfs(self, query: dict[str, Any]) -> list[Any]:
-        try:
-            return self.collection.find(query)
-        except Exception as exc:
-            raise (f"Mongo find failed: {exc}")
 
     # def update(self, query: dict[str, Any], new_values: dict[str, Any]) -> Any:
     #     try:

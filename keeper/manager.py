@@ -8,7 +8,7 @@ mongodb:MongoRepository|None = None
 
 
 def messageHandler(topic:str,message:dict):
-    print(f"topic: {topic}, masseg: {message}")
+    # print(f"topic: {topic}, masseg: {message}")
     path:str = message.pop('path')
     u_id = UniqID.get_id(message['atime'],message['size'])
     message['u_id'] = u_id
@@ -18,7 +18,7 @@ def messageHandler(topic:str,message:dict):
         data['file'] = f
         data['name'] = path.split('\\')[-1]
         data['metadata'] = {'u_id':u_id}
-        print(data)
+        # print(data)
         mongodb.insert_gridfs(data)
     producer.send("to_transcribing",{'u_id':u_id})
     

@@ -17,7 +17,7 @@ class ESRepository(IRepository):
 
 
     def insert(self, data: dict[str, Any]) -> Any:
-        print(data)
+        # print(data)
         try:
             return self.client.index(index=self.index, document=data)
         except Exception as exc:

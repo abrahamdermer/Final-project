@@ -6,13 +6,18 @@ from .transcriber import Transcriber
 
 es:ESRepository|None = None
 mongodb:MongoRepository|None = None
+transc:Transcriber = None
 
 def messageHandler(topic:str,message:dict):
-    print(f"topic: {topic}, masseg: {message}")
-    # u_id = message.u_id
-    # query = {'u_id':u_id}
-    # file = mongodb.find_gridfs(query)
-    # text = Transcriber.file_to_text(file)
+    # print(f"topic: {topic}, masseg: {message}")
+    u_id = message["u_id"]
+    query = {'u_id':u_id}
+    file = mongodb.find_gridfs(query)
+    # with open(f"{u_id}.wav",'w') as f:
+    #     f.write('aaa')
+    # print(file)
+
+    text = transc.file_to_text(file,u_id)
     # es.update(text,u_id)
     
 
@@ -20,7 +25,8 @@ class Manager:
 
     def __init__(self):
         self.kafka = KafkaConsumerRepo('to_transcribing')
-        global es , mongodb
+        global es , mongodb,transc
+        transc = Transcriber()
         es = ESRepository()
         mongodb = MongoRepository()
 
