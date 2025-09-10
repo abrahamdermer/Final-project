@@ -1,13 +1,14 @@
 from typing import Any
 from .i_repository import IRepository
 from .mongo_connect import MongoConnect
+from . import config
 # from tools import Logger
 
 class MongoRepository(IRepository):
     """Concrete repository for MongoDB collections."""
 
 
-    def __init__(self, collection_name:str = "test", conn: MongoConnect|None = None):
+    def __init__(self, collection_name:str = config.MONGO_COLLECTION_NAME, conn: MongoConnect|None = None):
         self._conn = conn or MongoConnect()
         self.db = self._conn.connect()
         self.fs = None

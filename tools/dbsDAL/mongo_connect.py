@@ -1,11 +1,12 @@
 from pymongo import MongoClient
 import gridfs
 from .i_connect import IConnect
+from . import config
 # from tools import Logger
 
 class MongoConnect(IConnect):
     """MongoDB connection manager (singleton per instance)."""
-    def __init__(self, uri:str = "mongodb://localhost:27000", db_name:str = "data"):
+    def __init__(self, uri:str = config.MONGO_URL, db_name:str =config.MONGO_DB_NAME):
         self.uri = uri
         self.db_name = db_name
         self._client = None
