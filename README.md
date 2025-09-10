@@ -25,6 +25,7 @@ Service 4
 
 Performs risk calculation operations for each ID
 (not yet written the queries)
+(I know I could put it in the pipeline but I don't have time to learn it...)
 
 I chose to split everything into different services despite the difficulty in writing the function that implements access to information in some of the services in order to imitate the operations in some of the services and make the information that already exists accessible to researchers
 In addition, this maintains the principle of "different operations in different places"
