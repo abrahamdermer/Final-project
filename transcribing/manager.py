@@ -2,14 +2,15 @@ from tools import KafkaConsumerRepo ,ESRepository ,MongoRepository  , KafkaProdu
 import threading
 import time
 from .transcriber import Transcriber
+from . import config
 
 
 es:ESRepository|None = None
 mongodb:MongoRepository|None = None
-transc:Transcriber = None
+transc:Transcriber|None = None
 producer:KafkaProducerRepo|None = None
 
-def messageHandler(topic:str,message:dict):
+def messageHandler(fice:int,message:dict):
     u_id = message["u_id"]
     query = {'u_id':u_id}
     file = mongodb.find_gridfs(query)
@@ -17,14 +18,14 @@ def messageHandler(topic:str,message:dict):
     print(text)
     query = {"match":{'u_id':u_id}}
     print(es.update(query,{'text':text}))
-    producer.send("to_classifying",{'u_id':u_id})
+    producer.send(config.TARGET_TOPIC_NAME,{'u_id':u_id})
 
     
 
 class Manager:
 
     def __init__(self):
-        self.kafka = KafkaConsumerRepo('to_transcribing')
+        self.kafka = KafkaConsumerRepo(config.SOURCE_TOPIC_NAME)
         global es , mongodb,transc,producer
         transc = Transcriber()
         es = ESRepository()
@@ -50,5 +51,3 @@ if __name__ == "__main__":
     m = Manager()
 
     m.start_lisane(messageHandler)
-
-    # mongodb.get_all()
