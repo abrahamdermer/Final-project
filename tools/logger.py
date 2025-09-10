@@ -30,32 +30,33 @@
 #         cls._loggre = logger
 #         return logger
     
-
 import logging
 from elasticsearch import Elasticsearch
 from datetime import datetime
+from .dbsDAL.es_connect import ESConnect
 class Logger:
     _logger = None
     @classmethod
-    def get_logger(cls, name="loggs", es_host="https://localhost:9200",
-        index="loggs", level=logging.DEBUG):
+    def get_logger(cls, name="loggs", es_host = "http://localhost:9200",indexname="myloger", level=logging.DEBUG):
         if cls._logger:
             return cls._logger
         logger = logging.getLogger(name)
         logger.setLevel(level)
         if not logger.handlers:
-            es = Elasticsearch(es_host)
+            coon = ESConnect()
+            es = coon.connect()
             class ESHandler(logging.Handler):
                 def emit(self, record):
-                    try:
-                        es.index(index=index, document={
+                    data = {
                         "timestamp": datetime.utcnow().isoformat(),
 
                         "level": record.levelname,
                         "logger": record.name,
                         "message": record.getMessage()
 
-                    })
+                    }
+                    try:
+                        es.index(index=indexname, document=data)
                     except Exception as e:
                         print(f"ES log failed: {e}")
             logger.addHandler(ESHandler())
@@ -64,3 +65,4 @@ class Logger:
 
         cls._logger = logger
         return logger
+    

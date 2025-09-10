@@ -29,3 +29,5 @@ Performs risk calculation operations for each ID
 
 I chose to split everything into different services despite the difficulty in writing the function that implements access to information in some of the services in order to imitate the operations in some of the services and make the information that already exists accessible to researchers
 In addition, this maintains the principle of "different operations in different places"
+
+PS: I have service planning drawings and even according to the steps given to us in the assignment, I have no way of uploading them (I'm not allowed to bring a phone in and take pictures), but I would be happy to show them.
