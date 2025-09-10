@@ -1,5 +1,6 @@
 from kafka import KafkaProducer, KafkaConsumer
 from .i_connect import IConnect
+from . import config
 # from tools import Logger
 
 class KafkaConnect(IConnect):
@@ -8,7 +9,7 @@ class KafkaConnect(IConnect):
     Creates KafkaProducer and KafkaConsumer with sane defaults from config.
     """
 
-    def __init__(self, bootstrap_servers:str = "localhost:9092",group_id = 'mygroup') -> None:
+    def __init__(self, bootstrap_servers:str = config.KAFKA_HOST,group_id = config.KAFKA_GROP) -> None:
         self.bootstrap_servers = bootstrap_servers
         self.group_id = group_id
         # self.logger = Logger.get_logger()
@@ -17,7 +18,7 @@ class KafkaConnect(IConnect):
     def get_producer(self) -> KafkaProducer:
         producer = KafkaProducer(
             bootstrap_servers=self.bootstrap_servers,
-            client_id= "kafka-dal-client"
+            client_id= config.KAFKA_ID
         )
         # self.logger.info('kafka producer Created')
         return producer
