@@ -7,5 +7,5 @@ class IDetermining(ABC):
 
 
      @abstractmethod
-     def to_clessiping()->None:
+     def to_clessiping(es,id)->None:
           pass
