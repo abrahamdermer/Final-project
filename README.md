@@ -31,3 +31,5 @@ I chose to split everything into different services despite the difficulty in wr
 In addition, this maintains the principle of "different operations in different places"
 
 PS: I have service planning drawings and even according to the steps given to us in the assignment, I have no way of uploading them (I'm not allowed to bring a phone in and take pictures), but I would be happy to show them.
+
+The logger was only fixed in the last bar, so it is turned off in some places.
