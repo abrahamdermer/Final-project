@@ -1,14 +1,15 @@
 from tools import KafkaConsumerRepo ,ESRepository ,MongoRepository  , Logger
 import threading
 import time
-from .classifier import Classifier 
+from .classifier import Classifier
+from . import config
 
 
 es:ESRepository|None = None
 mongodb:MongoRepository|None = None
 classifier:Classifier|None = None
 
-def messageHandler(topic:str,message:dict):
+def messageHandler(fike:int,message:dict):
     # print(f"topic: {topic}, masseg: {message}")
     u_id = message["u_id"]
     # classifier.to_classing(u_id)
@@ -17,7 +18,7 @@ def messageHandler(topic:str,message:dict):
 class Manager:
 
     def __init__(self):
-        self.kafka = KafkaConsumerRepo('to_transcribing')
+        self.kafka = KafkaConsumerRepo(config.SOURCE_TOPIC_NAME)
         global es , mongodb ,classifier
         classifier = Classifier()
         es = ESRepository()
@@ -42,5 +43,3 @@ if __name__ == "__main__":
     m = Manager()
 
     m.start_lisane(messageHandler)
-
-    # mongodb.get_all()
