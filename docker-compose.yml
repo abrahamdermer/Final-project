@@ -1,0 +1,37 @@
+
+    version: "1.0"
+    services:
+      mongo:
+        image: mongo:7
+        ports: ["27017:27017"]
+        volumes:
+          - final-pro:/data/db
+      es:
+        image: elasticsearch:8.15.0
+        ports: ["9200:9200"]
+        volumes:
+          - final-pro:/data/db
+
+      kafka:
+        image: apache/kafka:latest
+        ports: ["9092:9092"]
+        volumes:
+          - final-pro:/data/db
+
+      
+
+
+
+      prepro:
+        build: .
+        depends_on: [mongo]
+        environment:
+          MONGO_URL: "mongodb://mongo:27000"
+          MONGO_DB_NAME: "data"
+          MONGO_COLLECTION_NAME: "test"
+        volumes:
+          - ./data:/app/data
+
+    volumes:
+      final-pro:
+
