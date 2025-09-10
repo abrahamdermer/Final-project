@@ -1,25 +1,30 @@
-אומנם בעברית אבל זה גם משהוא
+The project is a tool for providing information for intelligence researchers,
+with an emphasis on audio materials
 
+The project is divided into services that divide the responsibility among themselves and transfer tasks to the next service via KAFKA
 
-הפרויקט מחולק לסרוויסים שמחלקים את האחריות בינהם ומעבירים משימה לשרות הבא באמצעות KAFKA
+Service 1:
 
-סרוויס 1:
+Goes through the files
+Sends metadata and a path to KAFKA
 
-עובר על הקבצי
-שולח MD ונתיב לKAFKA
+Service 2:
 
-סרוויס 2:
-מיצר ID יחודי
-מעלה את הקובץ למונגו ואת הMD ל ES
-שולח את ID לקאפקא
+Generates a unique ID
+Uploads the file to Mongo and the MD to ES
+Sends the ID to Kafka
 
-סרוויס 3
+Service 3
 
-מוריד את הקובץ ממונגו
-מתמלל אותו
-מעדכן את התמלול לES
-שולח את הID לקאפקא
+Downloads the file from Mongo
+Transcribes it
+Updates the transcription to ES
+Sends the ID to Kafka
 
-סרוויס 4
+Service 4
 
-מבצע עבור כל ID פעולות חישוב של הסיכון
+Performs risk calculation operations for each ID
+(not yet written the queries)
+
+I chose to split everything into different services despite the difficulty in writing the function that implements access to information in some of the services in order to imitate the operations in some of the services and make the information that already exists accessible to researchers
+In addition, this maintains the principle of "different operations in different places"
