@@ -22,14 +22,6 @@ def messageHandler(topic:str,message:dict):
         mongodb.insert_gridfs(data)
     producer.send("to_transcribing",{'u_id':u_id})
     
-    
-
-# return self.fs.upload_from_stream(data['name'], data['file'], metadata=data['metadata'])
-# with open('your_file.txt', 'rb') as f:
-#         file_id = fs.upload_from_stream('your_file.txt', f)
-#         # You can also add metadata:
-#         # file_id = fs.upload_from_stream('your_file.txt', f, metadata={'author': 'John Doe'})    
-
 
 class Manager:
 

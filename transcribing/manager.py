@@ -1,4 +1,4 @@
-from tools import KafkaConsumerRepo ,ESRepository ,MongoRepository  , Logger
+from tools import KafkaConsumerRepo ,ESRepository ,MongoRepository  , KafkaProducerRepo
 import threading
 import time
 from .transcriber import Transcriber
@@ -7,9 +7,9 @@ from .transcriber import Transcriber
 es:ESRepository|None = None
 mongodb:MongoRepository|None = None
 transc:Transcriber = None
+producer:KafkaProducerRepo|None = None
 
 def messageHandler(topic:str,message:dict):
-    # print(f"topic: {topic}, masseg: {message}")
     u_id = message["u_id"]
     query = {'u_id':u_id}
     file = mongodb.find_gridfs(query)
@@ -17,16 +17,19 @@ def messageHandler(topic:str,message:dict):
     print(text)
     query = {"match":{'u_id':u_id}}
     print(es.update(query,{'text':text}))
+    producer.send("to_classifying",{'u_id':u_id})
+
     
 
 class Manager:
 
     def __init__(self):
         self.kafka = KafkaConsumerRepo('to_transcribing')
-        global es , mongodb,transc
+        global es , mongodb,transc,producer
         transc = Transcriber()
         es = ESRepository()
         mongodb = MongoRepository()
+        producer = KafkaProducerRepo()
 
     def start_lisane(self,messageHandler):
         t = threading.Thread(target=self.kafka.listen,args=(1,messageHandler),daemon=True)
